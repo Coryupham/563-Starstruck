@@ -201,3 +201,23 @@ openClaw()
 		motor [clawL] = -15;
 
 }
+
+void
+openClawPower(int time)
+{
+	motor [clawR] = -127;
+	motor [clawL] = -127;
+	wait1Msec(time);
+	motor [clawR] = -15;
+	motor [clawL] = -15;
+}
+
+void
+closeClawPower(int time)
+{
+	motor [clawR] = 127;
+	motor [clawL] = 127;
+	wait1Msec(time);
+	motor [clawR] = 25;
+	motor [clawL] = 25;
+}

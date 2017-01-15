@@ -32,6 +32,31 @@
 //Main competition background code...do not modify!
 #include "Vex_Competition_Includes.c"
 #include "563 Functions V2.c"
+#include "563 Autons V2.c"
+
+const short leftButton = 1;
+const short centerButton = 2;
+const short rightButton = 4;
+
+////////////////////////////LCD AUTON SELECTION////////////////////////////////////////////
+#define AUTON_CHOICE_WAIT_TIME 5000  // 5 seconds = 5000 ms
+void waitForPress()
+{
+	while(nLCDButtons == 0 && time1[T1] < AUTON_CHOICE_WAIT_TIME){}
+	wait1Msec(5);
+}
+void waitForRelease()
+{
+	while(nLCDButtons != 0 && time1[T1] < AUTON_CHOICE_WAIT_TIME){}
+	wait1Msec(5);
+	clearTimer(T1);
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+#ifndef NUMBER_OF_AUTONS
+	#define NUMBER_OF_AUTONS 0
+#endif
+int count = 0;
+const int maxCount = NUMBER_OF_AUTONS + 1;
 
 /*---------------------------------------------------------------------------*/
 /*                          Pre-Autonomous Functions                         */
@@ -45,18 +70,78 @@
 
 void pre_auton()
 {
-  // Set bStopTasksBetweenModes to false if you want to keep user created tasks
-  // running between Autonomous and Driver controlled modes. You will need to
-  // manage all user created tasks if set to false.
+bLCDBacklight =true;
+	//Completely clear out any previous sensor readings by setting the port to "sensorNone"
+	//Clear LCD
+	clearLCDLine(0);
+	clearLCDLine(1);
+
+	// Set timer
+
+	clearTimer(T1);
+
+	//Loop while center button is not pressed & less than defined wait time
+	while(nLCDButtons != centerButton && time1[T1] < AUTON_CHOICE_WAIT_TIME)
+	{
+		//Switch case that allows the user to choose from 4 different options
+		switch(count){
+		case 0:
+			//Display the choice to do nothing
+			displayLCDCenteredString(0, "Nope.");
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff for the START */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count = NUMBER_OF_AUTONS;} else if(nLCDButtons == rightButton) { waitForRelease(); count++;}
+			break;
+		case 1:
+			//Display 1st choice
+			displayLCDCenteredString(0, autonOneName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 2:
+			//Display 2nd choice
+			displayLCDCenteredString(0, autonTwoName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 3:
+			//Display 3rd choice
+			displayLCDCenteredString(0, autonThreeName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 4:
+			//Display 4th choice
+			displayLCDCenteredString(0, autonFourName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 5:
+			//Display 5th choice
+			displayLCDCenteredString(0, autonFiveName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 6:
+			//Display 6th choice
+			displayLCDCenteredString(0, autonSixName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case 7:
+			//Display 6th choice
+			displayLCDCenteredString(0, autonSevenName);
+			displayLCDCenteredString(1, "<    Enter    >");
+			/* Do button stuff */ waitForPress(); if(nLCDButtons == leftButton) { waitForRelease(); count--; } else if(nLCDButtons == rightButton) { waitForRelease(); count++; }
+			break;
+		case maxCount:
+		default:
+			count = 0;
+			break;
+		}
+	}
   bStopTasksBetweenModes = true;
 
-	// Set bDisplayCompetitionStatusOnLcd to false if you don't want the LCD
-	// used by the competition include file, for example, you might want
-	// to display your team name on the LCD in this function.
-	// bDisplayCompetitionStatusOnLcd = false;
 
-  // All activities that occur before the competition starts
-  // Example: clearing encoders, setting servo positions, ...
 }
 
 /*---------------------------------------------------------------------------*/
@@ -71,45 +156,82 @@ void pre_auton()
 
 task autonomous()
 {
-	openClaw();
-	driveForward(127, 100);
-	lift(70);
-	wait1Msec(1100);
-	haltYo();
-	wait1Msec(100);
-	driveForward(127, 1100);
-	haltYo();
-	driveBackward(70, 700);
-	haltYo();
-	lift(-75);
-	wait1Msec(500);
-	haltYo();
-	pointTurn(75, 300, RIGHT);
-	haltYo();
-	driveForward(90, 800);
-	closeClaw();
-	lift(127);
-	wait1msec(500);
-	haltYo();
-	liftStall(10);
-	pointTurn(75,300, RIGHT);
-	lift(127);
-	driveBackward(75, 700);
-	openClaw();
-	lift(-127);
-	wait1Msec(500);
-	haltYo();
-	openClaw();
-	driveForward(80, 800);
-	closeClaw();
-	wait1Msec(100);
-	lift(127);
-	driveBackward(127, 1000);
-	openClaw();
-	haltYo();
+	//Clear LCD
+	clearLCDLine(0);
+	clearLCDLine(1);
+	//Switch Case that actually runs the user choice
+	switch(count){
+	case 0:
+		//If count = 0, run the code correspoinding with doing nothing
+		displayLCDCenteredString(0, "No autonomous");
+		displayLCDCenteredString(1, "is running.");
+		break;
+	case 1:
+		//If count = 1, run the code correspoinding with choice 1
+		displayLCDCenteredString(0, autonOneName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 1//////////////////////////////////////////////////////////////////////////////////
+		autoOne();
+		// Auton 1//////////////////////////////////////////////////////////////////////////////////
 
-
+		break;
+	case 2:
+		//If count = 2, run the code correspoinding with choice 2
+		displayLCDCenteredString(0, autonTwoName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 2 ////////////////////////////////////////////////////////////////////////////////
+		autoTwo();
+		// Auton 2 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case 3:
+		//If count = 3, run the code correspoinding with choice 3
+		displayLCDCenteredString(0, autonThreeName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 3 ////////////////////////////////////////////////////////////////////////////////
+		autoThree();
+		// Auton 3 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case 4:
+		//If count = 4, run the code correspoinding with choice 4
+		displayLCDCenteredString(0, autonFourName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 4 ////////////////////////////////////////////////////////////////////////////////
+		autoFour();
+		// Auton 4 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case 5:
+		//If count = 5, run the code correspoinding with choice 5
+		displayLCDCenteredString(0, autonFiveName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 5 ////////////////////////////////////////////////////////////////////////////////
+		autoFive();
+		// Auton 5 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case 6:
+		//If count = 6, run the code correspoinding with choice 6
+		displayLCDCenteredString(0, autonSixName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 6 ////////////////////////////////////////////////////////////////////////////////
+		autoSix();
+		// Auton 5 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case 7:
+		//If count = 7, run the code correspoinding with choice 7
+		displayLCDCenteredString(0, autonSevenName);
+		displayLCDCenteredString(1, "is running!");
+		// Auton 7 ////////////////////////////////////////////////////////////////////////////////
+		autoSeven();
+		// Auton 7 ////////////////////////////////////////////////////////////////////////////////
+		break;
+	case maxCount:
+	default:
+		displayLCDCenteredString(0, "No valid choice");
+		displayLCDCenteredString(1, "was made!");
+		break;
+		//------------- End of Robot Movement Code -----------------------
+	}
 }
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
