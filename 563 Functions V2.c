@@ -1,5 +1,29 @@
 #define RIGHT	0
 #define LEFT	1
+
+#define clipNum(iInput, iHigh, iLow) iInput <= iLow ? iLow : (iInput >= iHigh ? iHigh : iInput)
+
+int MC29[ 128 ] = {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 13, 13, 14,
+    14, 14, 14, 15, 15, 15, 15, 16, 16, 16,
+    16, 16, 17, 17, 17, 17, 17, 17, 17, 17,
+    18, 18, 18, 18, 18, 18, 18, 19, 19, 19,
+    19, 19, 20, 20, 20, 20, 21, 21, 21, 22,
+    22, 22, 22, 23, 23, 23, 23, 24, 24, 24,
+    25, 25, 25, 26, 26, 26, 27, 27, 27, 28,
+    28, 28, 29, 29, 30, 30, 30, 31, 31, 32,
+    32, 33, 33, 34, 34, 35, 36, 36, 37, 37,
+    38, 39, 40, 40, 41, 42, 43, 44, 45, 46,
+    46, 48, 49, 50, 51, 53, 55, 56, 58, 60,
+    62, 64, 67, 70, 72, 76, 79, 83, 84, 127,
+};
+
+int
+truerSpeed( int iInput ) {
+    return sgn(iInput) * MC29[abs(clipNum(iInput, 127, -127))];
+}
+
 const	int tsArray[128] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	20, 21, 21, 21, 22, 22, 22, 23, 24, 24,
@@ -22,10 +46,10 @@ int trueSpeed(int power){
 void
 drive()
 {
-	motor[port9] = trueSpeed(vexRT[Ch2]);
-	motor[port6] = trueSpeed(vexRT[Ch3]);
-	motor[port3] = trueSpeed(vexRT[Ch2]);
-	motor[port2] = trueSpeed(vexRT[Ch3]);
+	motor[port9] = truerSpeed(vexRT[Ch2]);
+	motor[port6] = truerSpeed(vexRT[Ch3]);
+	motor[port3] = truerSpeed(vexRT[Ch2]);
+	motor[port2] = truerSpeed(vexRT[Ch3]);
 }
 
 int iDes;
